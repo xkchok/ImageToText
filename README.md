@@ -2,11 +2,6 @@
 
 A simple GUI application built with Rust that extracts text from images using Tesseract OCR. Features a clean interface with support for both file selection and clipboard image pasting.
 
-## Prerequisites
-
-- **Tesseract OCR** must be installed at `C:\Program Files\Tesseract-OCR\`
-- Download from: https://github.com/UB-Mannheim/tesseract/wiki
-
 ## Features
 
 ### Image Input
@@ -65,6 +60,7 @@ src/
 - **image**: Image processing and format support
 - **arboard**: Cross-platform clipboard access
 - **tempfile**: Temporary file management for clipboard images
+- **rusty-tesseract**: Integrated Tesseract OCR engine
 
 ## Technical Details
 

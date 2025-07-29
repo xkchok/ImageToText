@@ -1,23 +1,23 @@
 use std::path::PathBuf;
-use std::process::Command;
+use rusty_tesseract::{Image, Args};
+use image::ImageReader;
+use std::collections::HashMap;
 
 pub fn extract_text_from_image(image_path: &PathBuf) -> Result<String, Box<dyn std::error::Error>> {
-    let tesseract_exe = r"C:\Program Files\Tesseract-OCR\tesseract.exe";
+    let dynamic_image = ImageReader::open(image_path)?
+        .decode()?;
     
-    let output = Command::new(tesseract_exe)
-        .arg(image_path.to_str().unwrap())
-        .arg("stdout")
-        .arg("-c")
-        .arg("preserve_interword_spaces=1")
-        .arg("--psm")
-        .arg("6")
-        .output()?;
+    let img = Image::from_dynamic_image(&dynamic_image)?;
     
-    if output.status.success() {
-        let text = String::from_utf8(output.stdout)?;
-        Ok(text.trim_end().to_string())
-    } else {
-        let error = String::from_utf8_lossy(&output.stderr);
-        Err(format!("Tesseract failed: {}", error).into())
-    }
+    let args = Args {
+        lang: "eng".to_string(),
+        config_variables: HashMap::from([
+            ("preserve_interword_spaces".into(), "1".into()),
+        ]),
+        psm: Some(6),
+        ..Args::default()
+    };
+    
+    let text = rusty_tesseract::image_to_string(&img, &args)?;
+    Ok(text.trim_end().to_string())
 }
